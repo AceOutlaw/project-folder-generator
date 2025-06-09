@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Folder Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Project Folder Generator</h1>
+            <p>Create organized project structures for professional workflows</p>
+        </header>
+
+        <main class="main-content">
+            <!-- Status Messages -->
+            <div id="status-message" class="status-message" role="alert" aria-live="polite"></div>
+
+            <!-- Project Form -->
+            <form id="project-form" class="project-form" novalidate>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="client-name">Client Name</label>
+                        <input 
+                            type="text" 
+                            id="client-name" 
+                            name="clientName"
+                            placeholder="Studio Kace" 
+                            required 
+                            autocomplete="organization"
+                        >
+                        <span class="field-error" id="client-name-error"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="client-code">Client Code</label>
+                        <input 
+                            type="text" 
+                            id="client-code" 
+                            name="clientCode"
+                            placeholder="SK" 
+                            maxlength="4" 
+                            required
+                            pattern="[A-Za-z0-9]{1,4}"
+                            title="1-4 letters or numbers only"
+                        >
+                        <span class="field-error" id="client-code-error"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="project-type">Project Type</label>
+                    <select id="project-type" name="projectType" required>
+                        <option value="">Select project type...</option>
+                        <option value="Website">Website</option>
+                        <option value="Application">Application</option>
+                        <option value="Branding">Branding/Identity</option>
+                        <option value="Campaign">Campaign/Marketing</option>
+                        <option value="Print">Print Design</option>
+                        <option value="Presentation">Presentation</option>
+                        <option value="Strategy">Strategy/Consulting</option>
+                        <option value="Music">Music</option>
+                    </select>
+                    <span class="field-error" id="project-type-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="descriptor">Project Descriptor</label>
+                    <input 
+                        type="text" 
+                        id="descriptor" 
+                        name="descriptor"
+                        placeholder="Redesign, Update, Launch, Dashboard..." 
+                        required
+                        maxlength="50"
+                    >
+                    <span class="field-error" id="descriptor-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="custom-readme">Custom README Content</label>
+                    <textarea id="custom-readme" name="customReadme" rows="4" placeholder="Enter custom README content here..."></textarea>
+                </div>
+
+                <!-- Folder Descriptions Section -->
+                <section class="folder-descriptions" aria-labelledby="descriptions-heading">
+                    <h2 id="descriptions-heading">Folder Descriptions</h2>
+                    <p class="helper-text">Enter descriptions for each folder to create README files within them</p>
+                    
+                    <div class="folder-description-items">
+                        <!-- These will be dynamically generated from CONFIG.project.folders -->
+                    </div>
+                </section>
+
+                <!-- Live Preview Section -->
+                <section class="preview-section" aria-labelledby="preview-heading">
+                    <h2 id="preview-heading">Project Preview</h2>
+                    <div class="preview-content">
+                        <div class="preview-display">
+                            <div class="preview-full" id="preview-full" aria-label="Full project display name">
+                                Enter details to see preview
+                            </div>
+                            <div class="preview-folder" id="preview-folder" aria-label="Generated folder name">
+                                Folder name will appear here
+                            </div>
+                        </div>
+                        
+                        <!-- Folder Structure Preview -->
+                        <div class="folder-structure">
+                            <h3>Folder Structure:</h3>
+                            <ul class="folder-tree" role="tree">
+                                <li class="folder-item main-folder" role="treeitem" id="main-folder-preview">
+                                    📁 Your-Project-Folder
+                                    <ul role="group">
+                                        <li role="treeitem">📁 Assets</li>
+                                        <li role="treeitem">📁 Working Files</li>
+                                        <li role="treeitem">📁 Exports</li>
+                                        <li role="treeitem">📁 Deliverables</li>
+                                        <li role="treeitem">📁 Project Management</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Action Buttons -->
+                <section class="action-section">
+                    <button 
+                        type="button" 
+                        id="create-local-btn" 
+                        class="btn btn-primary"
+                        disabled
+                        aria-describedby="local-btn-description"
+                    >
+                        <span class="btn-icon">📁</span>
+                        Create Local Folders
+                    </button>
+                    
+                    <button 
+                        type="button" 
+                        id="save-google-btn" 
+                        class="btn btn-secondary"
+                        disabled
+                        aria-describedby="google-btn-description"
+                        title="Google Drive integration - Coming soon"
+                    >
+                        <span class="btn-icon">☁️</span>
+                        Save to Google Drive
+                        <span class="btn-status">(Coming Soon)</span>
+                    </button>
+                    
+                    <div class="btn-descriptions">
+                        <p id="local-btn-description" class="btn-description">
+                            Downloads a ZIP file with your project folder structure
+                        </p>
+                        <p id="google-btn-description" class="btn-description">
+                            Creates folders directly in your Google Drive (requires setup)
+                        </p>
+                    </div>
+                </section>
+            </form>
+        </main>
+
+        <footer class="footer">
+            <p>Built for professional project organization</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/local-folders.js"></script>
+</body>
+</html>
