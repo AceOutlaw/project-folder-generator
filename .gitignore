@@ -52,4 +52,4 @@ temp/
 .npm
 
 # Vercel
-.vercel
+.vercel.vercel

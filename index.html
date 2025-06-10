@@ -4,16 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Folder Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <header class="header">
-            <h1>Project Folder Generator</h1>
+            <h1>Studio Kace Project Folder Generator</h1>
             <p>Create organized project structures for professional workflows</p>
         </header>
 
         <main class="main-content">
+            <div class="form-container">
             <!-- Status Messages -->
             <div id="status-message" class="status-message" role="alert" aria-live="polite"></div>
 
@@ -49,33 +53,35 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="project-type">Project Type</label>
-                    <select id="project-type" name="projectType" required>
-                        <option value="">Select project type...</option>
-                        <option value="Website">Website</option>
-                        <option value="Application">Application</option>
-                        <option value="Branding">Branding/Identity</option>
-                        <option value="Campaign">Campaign/Marketing</option>
-                        <option value="Print">Print Design</option>
-                        <option value="Presentation">Presentation</option>
-                        <option value="Strategy">Strategy/Consulting</option>
-                        <option value="Music">Music</option>
-                    </select>
-                    <span class="field-error" id="project-type-error"></span>
-                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="project-type">Project Type</label>
+                        <select id="project-type" name="projectType" required>
+                            <option value="">Select project type...</option>
+                            <option value="Website">Website</option>
+                            <option value="Application">Application</option>
+                            <option value="Branding">Branding/Identity</option>
+                            <option value="Campaign">Campaign/Marketing</option>
+                            <option value="Print">Print Design</option>
+                            <option value="Presentation">Presentation</option>
+                            <option value="Strategy">Strategy/Consulting</option>
+                            <option value="Music">Music</option>
+                        </select>
+                        <span class="field-error" id="project-type-error"></span>
+                    </div>
 
-                <div class="form-group">
-                    <label for="descriptor">Project Descriptor</label>
-                    <input 
-                        type="text" 
-                        id="descriptor" 
-                        name="descriptor"
-                        placeholder="Redesign, Update, Launch, Dashboard..." 
-                        required
-                        maxlength="50"
-                    >
-                    <span class="field-error" id="descriptor-error"></span>
+                    <div class="form-group">
+                        <label for="descriptor">Project Descriptor</label>
+                        <input 
+                            type="text" 
+                            id="descriptor" 
+                            name="descriptor"
+                            placeholder="Dashboard..." 
+                            required
+                            maxlength="50"
+                        >
+                        <span class="field-error" id="descriptor-error"></span>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -127,29 +133,30 @@
 
                 <!-- Action Buttons -->
                 <section class="action-section">
-                    <button 
-                        type="button" 
-                        id="create-local-btn" 
-                        class="btn btn-primary"
-                        disabled
-                        aria-describedby="local-btn-description"
-                    >
-                        <span class="btn-icon">📁</span>
-                        Create Local Folders
-                    </button>
-                    
-                    <button 
-                        type="button" 
-                        id="save-google-btn" 
-                        class="btn btn-secondary"
-                        disabled
-                        aria-describedby="google-btn-description"
-                        title="Google Drive integration - Coming soon"
-                    >
-                        <span class="btn-icon">☁️</span>
-                        Save to Google Drive
-                        <span class="btn-status">(Coming Soon)</span>
-                    </button>
+                    <div class="action-buttons">
+                        <button 
+                            type="button" 
+                            id="create-local-btn" 
+                            class="btn btn-primary"
+                            disabled
+                            aria-describedby="local-btn-description"
+                        >
+                            <span class="btn-icon">📁</span>
+                            Create Local Folders
+                        </button>
+                        
+                        <button 
+                            type="button" 
+                            id="save-google-btn" 
+                            class="btn btn-secondary"
+                            disabled
+                            aria-describedby="google-btn-description"
+                            title="Google Drive integration - Coming soon"
+                        >
+                            <span class="btn-icon">☁</span>
+                            Save to Google Drive (Coming Soon)
+                        </button>
+                    </div>
                     
                     <div class="btn-descriptions">
                         <p id="local-btn-description" class="btn-description">
@@ -161,6 +168,7 @@
                     </div>
                 </section>
             </form>
+            </div>
         </main>
 
         <footer class="footer">
