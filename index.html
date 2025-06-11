@@ -31,7 +31,6 @@
                             id="client-name" 
                             name="clientName"
                             placeholder="Studio Kace" 
-                            required 
                             autocomplete="organization"
                         >
                         <span class="field-error" id="client-name-error"></span>
@@ -45,7 +44,6 @@
                             name="clientCode"
                             placeholder="SK" 
                             maxlength="4" 
-                            required
                             pattern="[A-Za-z0-9]{1,4}"
                             title="1-4 letters or numbers only"
                         >
@@ -56,7 +54,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="project-type">Project Type</label>
-                        <select id="project-type" name="projectType" required>
+                        <select id="project-type" name="projectType">
                             <option value="">Select project type...</option>
                             <option value="Website">Website</option>
                             <option value="Application">Application</option>
@@ -78,7 +76,6 @@
                             id="descriptor" 
                             name="descriptor"
                             placeholder="Dashboard..." 
-                            required
                             maxlength="50"
                         >
                         <span class="field-error" id="descriptor-error"></span>
