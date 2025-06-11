@@ -288,9 +288,9 @@ class ProjectFolderGenerator {
     }
 
     handleSaveGoogle() {
-        // Google Drive functionality coming soon
-        this.showStatus('Google Drive integration coming soon!', 'info');
-        CONFIG.utils.log('info', 'Google Drive functionality requested (not yet implemented)');
+        // Cloud storage functionality coming soon
+        this.showStatus('Cloud storage integration coming soon!', 'info');
+        CONFIG.utils.log('info', 'Cloud storage functionality requested (not yet implemented)');
     }
 
     // ================================

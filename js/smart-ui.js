@@ -54,12 +54,12 @@ class SmartUIManager {
                         handler: 'handleCreateDirect'
                     },
                     {
-                        id: 'save-google-btn',
+                        id: 'save-cloud-btn',
                         icon: '☁️',
-                        text: 'Save to Google Drive',
-                        description: 'Create folders in your Google Drive (coming soon)',
+                        text: 'Save to Cloud',
+                        description: 'Create folders in your cloud storage (coming soon)',
                         primary: false,
-                        handler: 'handleSaveGoogle',
+                        handler: 'handleSaveCloud',
                         disabled: true,
                         comingSoon: true
                     }
@@ -80,12 +80,12 @@ class SmartUIManager {
                         handler: 'handleCreateLocal'
                     },
                     {
-                        id: 'save-google-btn',
+                        id: 'save-cloud-btn',
                         icon: '☁️',
-                        text: 'Save to Google Drive',
-                        description: 'Create folders in your Google Drive (coming soon)',
+                        text: 'Save to Cloud',
+                        description: 'Create folders in your cloud storage (coming soon)',
                         primary: false,
-                        handler: 'handleSaveGoogle',
+                        handler: 'handleSaveCloud',
                         disabled: true,
                         comingSoon: true
                     }
@@ -196,7 +196,7 @@ class SmartUIManager {
                     button.addEventListener('click', window.fileSystemAPI.handleCreateDirect.bind(window.fileSystemAPI));
                 } else if (handlerName === 'handleCreateLocal' && window.app) {
                     button.addEventListener('click', window.app.handleCreateLocal.bind(window.app));
-                } else if (handlerName === 'handleSaveGoogle' && window.app) {
+                } else if (handlerName === 'handleSaveCloud' && window.app) {
                     button.addEventListener('click', window.app.handleSaveGoogle.bind(window.app));
                 }
                 
@@ -222,7 +222,7 @@ class SmartUIManager {
                     window.app.elements.createDirectBtn = button;
                 } else if (buttonConfig.id === 'download-zip-btn') {
                     window.app.elements.createLocalBtn = button;
-                } else if (buttonConfig.id === 'save-google-btn') {
+                } else if (buttonConfig.id === 'save-cloud-btn') {
                     window.app.elements.saveGoogleBtn = button;
                 }
             }
