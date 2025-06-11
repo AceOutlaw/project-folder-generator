@@ -17,15 +17,6 @@ class FileSystemProjectGenerator {
         // Check if File System API is available
         const hasFileSystemAccess = 'showDirectoryPicker' in window;
         const isSecureContext = window.isSecureContext;
-        const protocol = window.location.protocol;
-        
-        console.log('File System API Support Check:', {
-            hasFileSystemAccess,
-            isSecureContext,
-            protocol,
-            userAgent: navigator.userAgent,
-            supported: hasFileSystemAccess && isSecureContext
-        });
         
         CONFIG.utils.log('info', 'File System API Support Check', {
             hasFileSystemAccess,
@@ -37,15 +28,11 @@ class FileSystemProjectGenerator {
     }
 
     init() {
-        console.log('FileSystemProjectGenerator init called', { isSupported: this.isSupported });
-        
         if (this.isSupported) {
             CONFIG.utils.log('info', 'File System API is supported');
-            console.log('Setting up File System API UI...');
             this.setupUI();
         } else {
             CONFIG.utils.log('info', 'File System API not supported - fallback to downloads');
-            console.log('File System API not supported, reasons:', this.getMissingFeatures());
         }
     }
 
@@ -82,16 +69,12 @@ class FileSystemProjectGenerator {
 
         // Add event listener
         directButton.addEventListener('click', this.handleCreateDirect.bind(this));
-        console.log('Event listener attached to direct button');
 
         // Cache the element in the main app
         if (window.app && window.app.elements) {
             window.app.elements.createDirectBtn = directButton;
-            console.log('Button cached in main app elements');
             // Update button states immediately
             window.app.updateButtonStates();
-        } else {
-            console.warn('Main app or elements not available for caching');
         }
 
         CONFIG.utils.log('info', 'Direct create button added');
@@ -119,16 +102,11 @@ class FileSystemProjectGenerator {
     // ================================
 
     async handleCreateDirect() {
-        console.log('Create Direct button clicked - starting handler');
-        
         if (!window.app) {
-            console.error('Main app not found');
             this.showError('Application not initialized');
             return;
         }
 
-        console.log('Main app found, validating form...');
-        
         if (!window.app.validateForm()) {
             this.showError('Please fix the form errors before creating folders.');
             return;
@@ -139,7 +117,6 @@ class FileSystemProjectGenerator {
             
             // Generate project name
             const projectName = window.app.generateProjectName();
-            console.log('Project name:', projectName);
             
             // Ask user to pick a directory
             this.showStatus('Choose where to create your project folder...', 'info');
@@ -147,8 +124,6 @@ class FileSystemProjectGenerator {
             const dirHandle = await window.showDirectoryPicker({
                 mode: 'readwrite'
             });
-            
-            console.log('Directory selected:', dirHandle.name);
             
             // Create project structure directly
             await this.createProjectStructure(dirHandle, projectName);
@@ -160,7 +135,7 @@ class FileSystemProjectGenerator {
             }
             
         } catch (error) {
-            console.error('Direct creation error:', error);
+            CONFIG.utils.log('error', 'Direct creation failed', error);
             
             if (error.name === 'AbortError') {
                 this.showStatus('Folder selection cancelled', 'info');
@@ -192,15 +167,12 @@ class FileSystemProjectGenerator {
                 await projectDirHandle.getDirectoryHandle(folder, {
                     create: true
                 });
-                console.log(`Created folder: ${folder}`);
             }
             
             this.showStatus('Creating README file...', 'info');
             
             // Create README.md file
             await this.createReadmeFile(projectDirHandle, projectName, folders, customReadme);
-            
-            console.log('Project structure created successfully');
             
         } catch (error) {
             throw new Error(`Failed to create project structure: ${error.message}`);
@@ -238,8 +210,6 @@ Generated with Studio Kace Project Folder Generator
             await writable.write(content);
             await writable.close();
             
-            console.log('README.md created');
-            
         } catch (error) {
             throw new Error(`Failed to create README: ${error.message}`);
         }
@@ -252,8 +222,6 @@ Generated with Studio Kace Project Folder Generator
     showStatus(message, type = 'info') {
         if (window.app && window.app.showStatus) {
             window.app.showStatus(message, type);
-        } else {
-            console.log(`[${type}] ${message}`);
         }
     }
 
@@ -296,19 +264,10 @@ Generated with Studio Kace Project Folder Generator
 
     updateButtonState(hasValidData) {
         const button = document.getElementById('create-direct-btn');
-        console.log('Updating direct button state:', { 
-            hasValidData, 
-            isSupported: this.isSupported, 
-            buttonExists: !!button,
-            shouldEnable: hasValidData && this.isSupported
-        });
         
         if (button) {
             const shouldEnable = hasValidData && this.isSupported;
             button.disabled = !shouldEnable;
-            console.log('Direct button disabled state set to:', !shouldEnable);
-        } else {
-            console.warn('Direct button not found when trying to update state');
         }
     }
 

@@ -34,7 +34,6 @@ class SmartUIManager {
             isSecureContext: window.isSecureContext
         };
 
-        console.log('Browser capabilities detected:', capabilities);
         return capabilities;
     }
 
@@ -99,7 +98,6 @@ class SmartUIManager {
     // ================================
 
     init() {
-        console.log('SmartUIManager initializing with strategy:', this.buttonStrategy.type);
         this.replaceActionButtons();
         this.updateDescriptions();
         this.integrateWithMainApp();
@@ -108,7 +106,6 @@ class SmartUIManager {
     replaceActionButtons() {
         const actionButtons = document.querySelector('.action-buttons');
         if (!actionButtons) {
-            console.error('Action buttons container not found');
             return;
         }
 
@@ -120,8 +117,6 @@ class SmartUIManager {
             const button = this.createButton(buttonConfig);
             actionButtons.appendChild(button);
         });
-
-        console.log(`Created ${this.buttonStrategy.buttons.length} buttons for ${this.buttonStrategy.type} strategy`);
     }
 
     createButton(config) {
@@ -150,7 +145,6 @@ class SmartUIManager {
     updateDescriptions() {
         const descriptionsContainer = document.querySelector('.btn-descriptions');
         if (!descriptionsContainer) {
-            console.error('Button descriptions container not found');
             return;
         }
 
@@ -177,7 +171,6 @@ class SmartUIManager {
             if (window.app && window.app.elements) {
                 this.bindEventHandlers();
                 this.cacheButtonsInMainApp();
-                console.log('Integrated with main app');
             } else {
                 setTimeout(waitForApp, 50);
             }
@@ -199,8 +192,6 @@ class SmartUIManager {
                 } else if (handlerName === 'handleSaveCloud' && window.app) {
                     button.addEventListener('click', window.app.handleSaveGoogle.bind(window.app));
                 }
-                
-                console.log(`Bound ${handlerName} to ${buttonConfig.id}`);
             }
         });
     }
@@ -229,11 +220,6 @@ class SmartUIManager {
             }
         });
 
-        console.log('Buttons cached in main app:', {
-            createDirectBtn: !!window.app.elements.createDirectBtn,
-            createLocalBtn: !!window.app.elements.createLocalBtn,
-            saveGoogleBtn: !!window.app.elements.saveGoogleBtn
-        });
 
         // Update button states with a small delay to ensure everything is ready
         setTimeout(() => {

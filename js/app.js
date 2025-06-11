@@ -176,7 +176,6 @@ class ProjectFolderGenerator {
     }
 
     async handleCreateLocal() {
-        console.log('Create Local button clicked');
         this.showStatus('Creating folder structure...', 'info');
         
         if (!this.validateForm()) {
@@ -187,17 +186,12 @@ class ProjectFolderGenerator {
         try {
             this.setButtonLoading(this.elements.createLocalBtn, true);
             
-            // Debug form data
-            console.log('Form data:', this.formData);
-            
             // Generate project name
             const projectName = this.generateProjectName();
-            console.log('Project name:', projectName);
             this.showStatus('Generating project structure...', 'info');
             
             // Get folder list
             const folders = CONFIG.project.folders;
-            console.log('Folders:', folders);
             
             // Verify JSZip is available
             if (typeof JSZip === 'undefined') {
@@ -205,14 +199,11 @@ class ProjectFolderGenerator {
             }
             
             // Create folder generator
-            console.log('Creating folder generator...');
             const folderGenerator = new LocalFolderGenerator();
             
             // Create ZIP file
             this.showStatus('Creating ZIP file...', 'info');
-            console.log('Creating ZIP file with custom README:', this.formData.customReadme);
             const zipBlob = await folderGenerator.createZipFile(projectName, folders, this.formData.customReadme);
-            console.log('ZIP blob:', zipBlob);
             
             if (!zipBlob) {
                 throw new Error('Failed to create ZIP file');
@@ -220,18 +211,16 @@ class ProjectFolderGenerator {
             
             // Download ZIP
             this.showStatus('Starting download...', 'info');
-            console.log('Starting download...');
             await folderGenerator.downloadZip(zipBlob, projectName);
             
             this.showStatus('Folder structure created and downloaded successfully!', 'success');
-            console.log('Process completed successfully');
             
             if (CONFIG.ui.form.resetAfterSuccess) {
                 this.resetForm();
             }
             
         } catch (error) {
-            console.error('Error details:', error);
+            CONFIG.utils.log('error', 'Create local failed', error);
             this.showStatus(`Error: ${error.message}`, 'error');
         } finally {
             this.setButtonLoading(this.elements.createLocalBtn, false);
@@ -239,7 +228,6 @@ class ProjectFolderGenerator {
     }
 
     async handleCreateScript() {
-        console.log('Create Script button clicked');
         this.showStatus('Generating script file...', 'info');
         
         if (!this.validateForm()) {
@@ -257,30 +245,22 @@ class ProjectFolderGenerator {
             
             // Generate project name
             const projectName = this.generateProjectName();
-            console.log('Project name:', projectName);
             this.showStatus('Creating script file...', 'info');
             
             // Get folder list
             const folders = CONFIG.project.folders;
-            console.log('Folders:', folders);
             
             // Create script file
-            console.log('Creating script with custom README:', this.formData.customReadme);
             const filename = this.scriptGenerator.createScript(projectName, folders, this.formData.customReadme);
             
-            // Get platform-specific instructions
-            const instructions = this.scriptGenerator.getPlatformInstructions();
-            
             this.showStatus(`Script downloaded: ${filename}. Check download folder for instructions.`, 'success');
-            console.log('Script created successfully:', filename);
-            console.log('Platform instructions:', instructions);
             
             if (CONFIG.ui.form.resetAfterSuccess) {
                 this.resetForm();
             }
             
         } catch (error) {
-            console.error('Script creation error:', error);
+            CONFIG.utils.log('error', 'Script creation failed', error);
             this.showStatus(`Error: ${error.message}`, 'error');
         } finally {
             this.setButtonLoading(this.elements.createScriptBtn, false);
@@ -579,29 +559,23 @@ class ProjectFolderGenerator {
 
 // Initialize the application when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM Content Loaded');
-    
-    // Debug JSZip availability
-    if (typeof JSZip === 'undefined') {
-        console.error('JSZip library is not loaded!');
-    } else {
-        console.log('JSZip library is available', JSZip.version);
-    }
-    
-    // Debug CONFIG object
-    console.log('CONFIG object:', CONFIG);
-    console.log('CONFIG.utils:', CONFIG.utils);
-    
     try {
-        console.log('Attempting to create ProjectFolderGenerator instance...');
+        // Verify required dependencies
+        if (typeof JSZip === 'undefined') {
+            throw new Error('JSZip library not loaded. Please refresh the page.');
+        }
+        
+        if (typeof CONFIG === 'undefined') {
+            throw new Error('Configuration not loaded. Please refresh the page.');
+        }
+        
         // Create global app instance
         window.app = new ProjectFolderGenerator();
         
         CONFIG.utils.log('info', 'Project Folder Generator started successfully');
         
     } catch (error) {
-        console.error('Failed to initialize Project Folder Generator:', error);
-        console.error('Error stack:', error.stack);
+        CONFIG.utils.log('error', 'Failed to initialize application', error);
         
         // Show error message to user
         const statusElement = document.getElementById('status-message');
