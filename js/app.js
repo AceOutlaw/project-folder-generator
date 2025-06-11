@@ -72,10 +72,11 @@ class ProjectFolderGenerator {
         this.elements.previewFolder = document.getElementById('preview-folder');
         this.elements.mainFolderPreview = document.getElementById('main-folder-preview');
 
-        // Action buttons
-        this.elements.createLocalBtn = document.getElementById('create-local-btn');
-        this.elements.createScriptBtn = document.getElementById('create-script-btn');
-        this.elements.saveGoogleBtn = document.getElementById('save-google-btn');
+        // Action buttons (will be set by Smart UI)
+        this.elements.createLocalBtn = null;
+        this.elements.createScriptBtn = null;
+        this.elements.createDirectBtn = null;
+        this.elements.saveGoogleBtn = null;
 
         // Status message
         this.elements.statusMessage = document.getElementById('status-message');
@@ -98,15 +99,13 @@ class ProjectFolderGenerator {
         this.elements.descriptor.addEventListener('blur', () => this.handleFieldBlur('descriptor'));
         this.elements.customReadme.addEventListener('blur', () => this.handleFieldBlur('customReadme'));
 
-        // Button events
-        this.elements.createLocalBtn.addEventListener('click', this.handleCreateLocal.bind(this));
-        this.elements.createScriptBtn.addEventListener('click', this.handleCreateScript.bind(this));
-        this.elements.saveGoogleBtn.addEventListener('click', this.handleSaveGoogle.bind(this));
+        // Button events will be handled by Smart UI system
+        // No need to bind here as Smart UI manages button creation and event binding
 
         // Form submission (prevent default)
         this.elements.form.addEventListener('submit', (e) => {
             e.preventDefault();
-            this.handleCreateLocal();
+            // Form submission will be handled by the appropriate button
         });
 
         CONFIG.utils.log('debug', 'Events bound successfully');
@@ -485,25 +484,23 @@ class ProjectFolderGenerator {
         if (window.smartUI) {
             window.smartUI.updateButtonStates(hasValidData);
         } else {
-            // Legacy button handling (fallback)
+            // Legacy button handling (fallback) - only if buttons exist
             if (this.elements.createLocalBtn) {
                 this.elements.createLocalBtn.disabled = !hasValidData;
             }
             if (this.elements.createScriptBtn) {
                 this.elements.createScriptBtn.disabled = !hasValidData || !this.scriptGenerator;
             }
-            
-            // Legacy fallback for direct File System API integration
             if (this.elements.createDirectBtn) {
                 this.elements.createDirectBtn.disabled = !hasValidData || !window.fileSystemAPI?.isSupported;
             }
-            if (window.fileSystemAPI) {
-                window.fileSystemAPI.updateButtonState(hasValidData);
-            }
-            
-            // Google Drive button stays disabled for now
             if (this.elements.saveGoogleBtn) {
                 this.elements.saveGoogleBtn.disabled = true;
+            }
+            
+            // Legacy fallback for direct File System API integration
+            if (window.fileSystemAPI) {
+                window.fileSystemAPI.updateButtonState(hasValidData);
             }
         }
 
@@ -540,6 +537,8 @@ class ProjectFolderGenerator {
     }
 
     setButtonLoading(button, isLoading) {
+        if (!button) return; // Safety check for null buttons
+        
         if (isLoading) {
             button.classList.add('loading');
             button.disabled = true;
