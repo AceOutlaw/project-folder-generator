@@ -440,7 +440,12 @@ class ProjectFolderGenerator {
         this.elements.createLocalBtn.disabled = !hasValidData;
         this.elements.createScriptBtn.disabled = !hasValidData || !this.scriptGenerator;
         
-        // File System API button (if available)
+        // Smart UI managed buttons
+        if (window.smartUI) {
+            window.smartUI.updateButtonStates(hasValidData);
+        }
+        
+        // Legacy fallback for direct File System API integration
         if (this.elements.createDirectBtn) {
             this.elements.createDirectBtn.disabled = !hasValidData || !window.fileSystemAPI?.isSupported;
         }
