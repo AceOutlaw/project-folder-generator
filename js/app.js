@@ -437,26 +437,42 @@ class ProjectFolderGenerator {
                            this.formData.projectType && 
                            this.formData.descriptor;
         
-        this.elements.createLocalBtn.disabled = !hasValidData;
-        this.elements.createScriptBtn.disabled = !hasValidData || !this.scriptGenerator;
-        
-        // Smart UI managed buttons
+        // Smart UI managed buttons (takes precedence)
         if (window.smartUI) {
             window.smartUI.updateButtonStates(hasValidData);
+        } else {
+            // Legacy button handling (fallback)
+            if (this.elements.createLocalBtn) {
+                this.elements.createLocalBtn.disabled = !hasValidData;
+            }
+            if (this.elements.createScriptBtn) {
+                this.elements.createScriptBtn.disabled = !hasValidData || !this.scriptGenerator;
+            }
+            
+            // Legacy fallback for direct File System API integration
+            if (this.elements.createDirectBtn) {
+                this.elements.createDirectBtn.disabled = !hasValidData || !window.fileSystemAPI?.isSupported;
+            }
+            if (window.fileSystemAPI) {
+                window.fileSystemAPI.updateButtonState(hasValidData);
+            }
+            
+            // Google Drive button stays disabled for now
+            if (this.elements.saveGoogleBtn) {
+                this.elements.saveGoogleBtn.disabled = true;
+            }
         }
-        
-        // Legacy fallback for direct File System API integration
-        if (this.elements.createDirectBtn) {
-            this.elements.createDirectBtn.disabled = !hasValidData || !window.fileSystemAPI?.isSupported;
-        }
-        if (window.fileSystemAPI) {
-            window.fileSystemAPI.updateButtonState(hasValidData);
-        }
-        
-        // Google Drive button stays disabled for now
-        this.elements.saveGoogleBtn.disabled = true;
 
-        CONFIG.utils.log('debug', 'Button states updated', { hasValidData, isValid: this.isValid, buttonDisabled: this.elements.createLocalBtn.disabled });
+        CONFIG.utils.log('debug', 'Button states updated', { 
+            hasValidData, 
+            isValid: this.isValid, 
+            smartUIActive: !!window.smartUI,
+            buttonsExist: {
+                createLocalBtn: !!this.elements.createLocalBtn,
+                createDirectBtn: !!this.elements.createDirectBtn,
+                saveGoogleBtn: !!this.elements.saveGoogleBtn
+            }
+        });
     }
 
     // ================================

@@ -208,10 +208,11 @@ class SmartUIManager {
     cacheButtonsInMainApp() {
         if (!window.app || !window.app.elements) return;
 
-        // Clear old button references
-        delete window.app.elements.createLocalBtn;
-        delete window.app.elements.createScriptBtn;
-        delete window.app.elements.createDirectBtn;
+        // Clear old button references safely
+        window.app.elements.createLocalBtn = null;
+        window.app.elements.createScriptBtn = null;
+        window.app.elements.createDirectBtn = null;
+        window.app.elements.saveGoogleBtn = null;
 
         // Cache new buttons
         this.buttonStrategy.buttons.forEach(buttonConfig => {
@@ -228,9 +229,18 @@ class SmartUIManager {
             }
         });
 
-        // Update button states
-        window.app.updateButtonStates();
-        console.log('Buttons cached in main app');
+        console.log('Buttons cached in main app:', {
+            createDirectBtn: !!window.app.elements.createDirectBtn,
+            createLocalBtn: !!window.app.elements.createLocalBtn,
+            saveGoogleBtn: !!window.app.elements.saveGoogleBtn
+        });
+
+        // Update button states with a small delay to ensure everything is ready
+        setTimeout(() => {
+            if (window.app && window.app.updateButtonStates) {
+                window.app.updateButtonStates();
+            }
+        }, 10);
     }
 
     // ================================
