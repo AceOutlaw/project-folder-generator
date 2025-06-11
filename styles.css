@@ -197,8 +197,13 @@ input:focus, select:focus {
     box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
 }
 
-input:invalid, select:invalid {
+/* Validation states - controlled by JavaScript */
+input.field-invalid, select.field-invalid {
     border-color: var(--color-error);
+}
+
+input.field-valid, select.field-valid {
+    border-color: var(--color-success);
 }
 
 .field-error {

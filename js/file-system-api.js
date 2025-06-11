@@ -108,6 +108,8 @@ class FileSystemProjectGenerator {
         }
 
         if (!window.app.validateForm()) {
+            // Mark all required fields as touched to show validation errors
+            window.app.showAllValidationErrors();
             this.showError('Please fix the form errors before creating folders.');
             return;
         }

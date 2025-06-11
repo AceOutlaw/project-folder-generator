@@ -14,6 +14,9 @@ class ProjectFolderGenerator {
         };
         this.isValid = false;
         
+        // Track which fields have been interacted with
+        this.touchedFields = new Set();
+        
         // Initialize script generator
         this.scriptGenerator = null;
         
@@ -89,11 +92,11 @@ class ProjectFolderGenerator {
         this.elements.customReadme.addEventListener('input', this.handleCustomReadmeChange.bind(this));
 
         // Form validation events
-        this.elements.clientName.addEventListener('blur', () => this.validateField('clientName'));
-        this.elements.clientCode.addEventListener('blur', () => this.validateField('clientCode'));
-        this.elements.projectType.addEventListener('blur', () => this.validateField('projectType'));
-        this.elements.descriptor.addEventListener('blur', () => this.validateField('descriptor'));
-        this.elements.customReadme.addEventListener('blur', () => this.validateField('customReadme'));
+        this.elements.clientName.addEventListener('blur', () => this.handleFieldBlur('clientName'));
+        this.elements.clientCode.addEventListener('blur', () => this.handleFieldBlur('clientCode'));
+        this.elements.projectType.addEventListener('blur', () => this.handleFieldBlur('projectType'));
+        this.elements.descriptor.addEventListener('blur', () => this.handleFieldBlur('descriptor'));
+        this.elements.customReadme.addEventListener('blur', () => this.handleFieldBlur('customReadme'));
 
         // Button events
         this.elements.createLocalBtn.addEventListener('click', this.handleCreateLocal.bind(this));
@@ -136,7 +139,7 @@ class ProjectFolderGenerator {
         this.updatePreview();
         
         if (CONFIG.ui.form.liveValidation) {
-            this.validateField('clientName');
+            this.validateAndShowFieldState('clientName');
         }
     }
 
@@ -148,7 +151,7 @@ class ProjectFolderGenerator {
         this.updatePreview();
         
         if (CONFIG.ui.form.liveValidation) {
-            this.validateField('clientCode');
+            this.validateAndShowFieldState('clientCode');
         }
     }
 
@@ -157,7 +160,7 @@ class ProjectFolderGenerator {
         this.updatePreview();
         
         if (CONFIG.ui.form.liveValidation) {
-            this.validateField('projectType');
+            this.validateAndShowFieldState('projectType');
         }
     }
 
@@ -166,7 +169,7 @@ class ProjectFolderGenerator {
         this.updatePreview();
         
         if (CONFIG.ui.form.liveValidation) {
-            this.validateField('descriptor');
+            this.validateAndShowFieldState('descriptor');
         }
     }
 
@@ -179,6 +182,8 @@ class ProjectFolderGenerator {
         this.showStatus('Creating folder structure...', 'info');
         
         if (!this.validateForm()) {
+            // Mark all required fields as touched to show validation errors
+            this.showAllValidationErrors();
             this.showStatus('Please fix the form errors before creating folders.', 'error');
             return;
         }
@@ -231,6 +236,8 @@ class ProjectFolderGenerator {
         this.showStatus('Generating script file...', 'info');
         
         if (!this.validateForm()) {
+            // Mark all required fields as touched to show validation errors
+            this.showAllValidationErrors();
             this.showStatus('Please fix the form errors before creating script.', 'error');
             return;
         }
@@ -276,6 +283,56 @@ class ProjectFolderGenerator {
     // ================================
     // Validation
     // ================================
+
+    handleFieldBlur(fieldName) {
+        // Mark field as touched
+        this.touchedFields.add(fieldName);
+        
+        // Validate and show visual feedback
+        this.validateAndShowFieldState(fieldName);
+        
+        // Update overall form validation
+        this.validateForm();
+    }
+
+    validateAndShowFieldState(fieldName) {
+        const element = this.elements[fieldName];
+        const errorElement = this.elements[fieldName + 'Error'];
+        
+        if (!element) return;
+
+        // Only show validation state if field has been touched
+        if (!this.touchedFields.has(fieldName)) {
+            return;
+        }
+
+        const validation = this.validateField(fieldName, this.formData[fieldName]);
+        
+        // Clear previous states
+        element.classList.remove('field-valid', 'field-invalid');
+        
+        if (validation.isValid) {
+            element.classList.add('field-valid');
+            if (errorElement) {
+                errorElement.textContent = '';
+            }
+        } else {
+            element.classList.add('field-invalid');
+            if (errorElement) {
+                errorElement.textContent = validation.message;
+            }
+        }
+    }
+
+    showAllValidationErrors() {
+        // Mark all required fields as touched and show their validation state
+        const requiredFields = ['clientName', 'clientCode', 'projectType', 'descriptor'];
+        
+        requiredFields.forEach(fieldName => {
+            this.touchedFields.add(fieldName);
+            this.validateAndShowFieldState(fieldName);
+        });
+    }
 
     validateField(fieldName, value) {
         // Skip validation if validation configuration is missing
