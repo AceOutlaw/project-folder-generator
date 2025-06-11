@@ -17,6 +17,15 @@ class FileSystemProjectGenerator {
         // Check if File System API is available
         const hasFileSystemAccess = 'showDirectoryPicker' in window;
         const isSecureContext = window.isSecureContext;
+        const protocol = window.location.protocol;
+        
+        console.log('File System API Support Check:', {
+            hasFileSystemAccess,
+            isSecureContext,
+            protocol,
+            userAgent: navigator.userAgent,
+            supported: hasFileSystemAccess && isSecureContext
+        });
         
         CONFIG.utils.log('info', 'File System API Support Check', {
             hasFileSystemAccess,
@@ -287,8 +296,19 @@ Generated with Studio Kace Project Folder Generator
 
     updateButtonState(hasValidData) {
         const button = document.getElementById('create-direct-btn');
+        console.log('Updating direct button state:', { 
+            hasValidData, 
+            isSupported: this.isSupported, 
+            buttonExists: !!button,
+            shouldEnable: hasValidData && this.isSupported
+        });
+        
         if (button) {
-            button.disabled = !hasValidData || !this.isSupported;
+            const shouldEnable = hasValidData && this.isSupported;
+            button.disabled = !shouldEnable;
+            console.log('Direct button disabled state set to:', !shouldEnable);
+        } else {
+            console.warn('Direct button not found when trying to update state');
         }
     }
 

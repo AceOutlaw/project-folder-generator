@@ -308,6 +308,11 @@ class ProjectFolderGenerator {
             return { isValid: true };
         }
         
+        // If value not provided, get it from form data
+        if (value === undefined) {
+            value = this.formData[fieldName] || '';
+        }
+        
         const rules = CONFIG.project.validation[fieldName];
         const result = {
             isValid: true,
@@ -318,6 +323,11 @@ class ProjectFolderGenerator {
         if (rules.required && (!value || value.trim() === '')) {
             result.isValid = false;
             result.message = 'This field is required';
+            return result;
+        }
+
+        // Skip length checks if value is null/undefined
+        if (value === null || value === undefined) {
             return result;
         }
 
