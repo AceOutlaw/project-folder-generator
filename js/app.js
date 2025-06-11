@@ -335,13 +335,20 @@ class ProjectFolderGenerator {
     }
 
     validateForm() {
-        const fields = ['clientName', 'clientCode', 'projectType', 'descriptor', 'customReadme'];
+        // Only validate required fields
+        const requiredFields = ['clientName', 'clientCode', 'projectType', 'descriptor'];
         let allValid = true;
 
-        fields.forEach(field => {
+        requiredFields.forEach(field => {
             const validation = this.validateField(field, this.formData[field]);
             if (!validation.isValid) allValid = false;
         });
+
+        // Validate optional fields only if they have content
+        if (this.formData.customReadme && this.formData.customReadme.trim()) {
+            const readmeValidation = this.validateField('customReadme', this.formData.customReadme);
+            if (!readmeValidation.isValid) allValid = false;
+        }
 
         this.isValid = allValid;
         this.updateButtonStates();
