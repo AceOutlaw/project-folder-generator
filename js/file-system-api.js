@@ -28,11 +28,15 @@ class FileSystemProjectGenerator {
     }
 
     init() {
+        console.log('FileSystemProjectGenerator init called', { isSupported: this.isSupported });
+        
         if (this.isSupported) {
             CONFIG.utils.log('info', 'File System API is supported');
+            console.log('Setting up File System API UI...');
             this.setupUI();
         } else {
             CONFIG.utils.log('info', 'File System API not supported - fallback to downloads');
+            console.log('File System API not supported, reasons:', this.getMissingFeatures());
         }
     }
 
@@ -69,10 +73,16 @@ class FileSystemProjectGenerator {
 
         // Add event listener
         directButton.addEventListener('click', this.handleCreateDirect.bind(this));
+        console.log('Event listener attached to direct button');
 
-        // Cache the element
+        // Cache the element in the main app
         if (window.app && window.app.elements) {
             window.app.elements.createDirectBtn = directButton;
+            console.log('Button cached in main app elements');
+            // Update button states immediately
+            window.app.updateButtonStates();
+        } else {
+            console.warn('Main app or elements not available for caching');
         }
 
         CONFIG.utils.log('info', 'Direct create button added');
@@ -100,12 +110,15 @@ class FileSystemProjectGenerator {
     // ================================
 
     async handleCreateDirect() {
+        console.log('Create Direct button clicked - starting handler');
+        
         if (!window.app) {
+            console.error('Main app not found');
             this.showError('Application not initialized');
             return;
         }
 
-        console.log('Create Direct button clicked');
+        console.log('Main app found, validating form...');
         
         if (!window.app.validateForm()) {
             this.showError('Please fix the form errors before creating folders.');

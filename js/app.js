@@ -431,6 +431,9 @@ class ProjectFolderGenerator {
         this.elements.createScriptBtn.disabled = !hasValidData || !this.scriptGenerator;
         
         // File System API button (if available)
+        if (this.elements.createDirectBtn) {
+            this.elements.createDirectBtn.disabled = !hasValidData || !window.fileSystemAPI?.isSupported;
+        }
         if (window.fileSystemAPI) {
             window.fileSystemAPI.updateButtonState(hasValidData);
         }
