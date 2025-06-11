@@ -430,6 +430,11 @@ class ProjectFolderGenerator {
         this.elements.createLocalBtn.disabled = !hasValidData;
         this.elements.createScriptBtn.disabled = !hasValidData || !this.scriptGenerator;
         
+        // File System API button (if available)
+        if (window.fileSystemAPI) {
+            window.fileSystemAPI.updateButtonState(hasValidData);
+        }
+        
         // Google Drive button stays disabled for now
         this.elements.saveGoogleBtn.disabled = true;
 
