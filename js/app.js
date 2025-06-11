@@ -14,6 +14,9 @@ class ProjectFolderGenerator {
         };
         this.isValid = false;
         
+        // Initialize script generator
+        this.scriptGenerator = null;
+        
         this.init();
     }
 
@@ -27,8 +30,22 @@ class ProjectFolderGenerator {
         this.cacheElements();
         this.bindEvents();
         this.setupForm();
+        this.initializeScriptGenerator();
         
         CONFIG.utils.log('info', 'Application initialized successfully');
+    }
+
+    initializeScriptGenerator() {
+        try {
+            if (typeof ScriptGenerator !== 'undefined') {
+                this.scriptGenerator = new ScriptGenerator();
+                CONFIG.utils.log('info', 'Script generator initialized');
+            } else {
+                CONFIG.utils.log('warn', 'ScriptGenerator class not available');
+            }
+        } catch (error) {
+            CONFIG.utils.log('error', 'Failed to initialize script generator', error);
+        }
     }
 
     cacheElements() {
@@ -54,6 +71,7 @@ class ProjectFolderGenerator {
 
         // Action buttons
         this.elements.createLocalBtn = document.getElementById('create-local-btn');
+        this.elements.createScriptBtn = document.getElementById('create-script-btn');
         this.elements.saveGoogleBtn = document.getElementById('save-google-btn');
 
         // Status message
@@ -79,6 +97,7 @@ class ProjectFolderGenerator {
 
         // Button events
         this.elements.createLocalBtn.addEventListener('click', this.handleCreateLocal.bind(this));
+        this.elements.createScriptBtn.addEventListener('click', this.handleCreateScript.bind(this));
         this.elements.saveGoogleBtn.addEventListener('click', this.handleSaveGoogle.bind(this));
 
         // Form submission (prevent default)
@@ -216,6 +235,55 @@ class ProjectFolderGenerator {
             this.showStatus(`Error: ${error.message}`, 'error');
         } finally {
             this.setButtonLoading(this.elements.createLocalBtn, false);
+        }
+    }
+
+    async handleCreateScript() {
+        console.log('Create Script button clicked');
+        this.showStatus('Generating script file...', 'info');
+        
+        if (!this.validateForm()) {
+            this.showStatus('Please fix the form errors before creating script.', 'error');
+            return;
+        }
+
+        if (!this.scriptGenerator) {
+            this.showStatus('Script generator not available. Please refresh the page.', 'error');
+            return;
+        }
+
+        try {
+            this.setButtonLoading(this.elements.createScriptBtn, true);
+            
+            // Generate project name
+            const projectName = this.generateProjectName();
+            console.log('Project name:', projectName);
+            this.showStatus('Creating script file...', 'info');
+            
+            // Get folder list
+            const folders = CONFIG.project.folders;
+            console.log('Folders:', folders);
+            
+            // Create script file
+            console.log('Creating script with custom README:', this.formData.customReadme);
+            const filename = this.scriptGenerator.createScript(projectName, folders, this.formData.customReadme);
+            
+            // Get platform-specific instructions
+            const instructions = this.scriptGenerator.getPlatformInstructions();
+            
+            this.showStatus(`Script downloaded: ${filename}. Check download folder for instructions.`, 'success');
+            console.log('Script created successfully:', filename);
+            console.log('Platform instructions:', instructions);
+            
+            if (CONFIG.ui.form.resetAfterSuccess) {
+                this.resetForm();
+            }
+            
+        } catch (error) {
+            console.error('Script creation error:', error);
+            this.showStatus(`Error: ${error.message}`, 'error');
+        } finally {
+            this.setButtonLoading(this.elements.createScriptBtn, false);
         }
     }
 
@@ -360,6 +428,7 @@ class ProjectFolderGenerator {
                            this.formData.descriptor;
         
         this.elements.createLocalBtn.disabled = !hasValidData;
+        this.elements.createScriptBtn.disabled = !hasValidData || !this.scriptGenerator;
         
         // Google Drive button stays disabled for now
         this.elements.saveGoogleBtn.disabled = true;

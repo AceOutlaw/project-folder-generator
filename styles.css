@@ -183,6 +183,14 @@ select {
     cursor: pointer;
 }
 
+select:valid {
+    color: var(--color-text);
+}
+
+select option {
+    color: var(--color-text);
+}
+
 input:focus, select:focus {
     outline: none;
     border-color: var(--color-primary);
@@ -314,6 +322,8 @@ textarea::placeholder {
     display: flex;
     gap: 10px;
     align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .btn {
